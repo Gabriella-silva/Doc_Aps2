@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro e Mesas Disponíveis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<style>body {
+    margin: 0;
+    padding: 0;
+    background: url('a.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Rubik", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+  
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    max-width: 1200px;
+  }
+  
+  .glassBox {
+    background: rgba(255, 255, 255, 0.2); /* Fundo translúcido com mais opacidade */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+    border-radius: 23px;
+    box-shadow: 
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    padding: 30px;
+    width: 350px;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .glassBox:hover {
+    transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+  }
+  
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Estilo da tabela */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+  
+  th {
+    background-color: #cd8d82;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  tr:hover {
+    background-color: rgba(205, 141, 130, 0.2);
+  }
+  
+  /* Estilo dos inputs */
+  .inputBox input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .inputBox input:focus {
+    outline: none;
+    border-color: #cd8d82;
+    box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
+  }
+  
+  /* Botões */
+  .submit input {
+    width: 100%;
+    padding: 12px;
+    background-color: #cd8d82;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 23px;
+    transition: all 0.3s ease;
+  }
+  
+  .submit input:hover {
+    background-color: hsl(11, 76%, 73%);
+    transform: scale(1.1);
+  }
+  
+  /* Estilo responsivo */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+  
+    .glassBox {
+      width: 90%;
+    }
+  }
+  </style>
+<body>
+  <div class="container">
+    <!-- Formulário de Cadastro -->
+    <div class="glassBox">
+      <h1>Cadastro de Reserva</h1>
+      <form id="cadastroForm">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" placeholder="Seu nome" required />
+
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="Seu e-mail" required />
+
+        <label for="dataReserva">Data da Reserva:</label>
+        <input type="date" id="dataReserva" name="dataReserva" required />
+
+        <label for="horaReserva">Hora da Reserva:</label>
+        <input type="time" id="horaReserva" name="horaReserva" required />
+
+        <label for="duracao">Tempo de Duração (em horas):</label>
+        <input type="number" id="duracao" name="duracao" min="1" placeholder="Duração em horas" required />
+
+        <div class="submit">
+          <input type="submit" value="Reservar Mesa">
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabela de Mesas Disponíveis -->
+    <div class="glassBox">
+      <h1>Mesas Disponíveis</h1>
+      <table id="mesasDisponiveis">
+        <thead>
+          <tr>
+            <th>Mesa ID</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Mesas Disponíveis serão inseridas aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Função para carregar as mesas disponíveis
+    async function carregarMesasDisponiveis() {
+      try {
+        const response = await fetch('http://localhost:3031/mesas');
+        const mesas = await response.json();
+
+        // Filtra as mesas disponíveis
+        const mesasDisponiveis = mesas.filter(mesa => mesa.status === 'Disponível');
+
+        // Preenche a tabela com as mesas disponíveis
+        const tabela = document.getElementById('mesasDisponiveis').getElementsByTagName('tbody')[0];
+        mesasDisponiveis.forEach(mesa => {
+          const row = tabela.insertRow();
+          row.innerHTML = `
+            <td>${mesa.id}</td>
+            <td>${mesa.status}</td>
+          `;
+        });
+      } catch (error) {
+        console.error('Erro ao carregar as mesas:', error);
+      }
+    }
+
+    // Função para enviar os dados de reserva
+    document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const dataReserva = document.getElementById('dataReserva').value;
+      const horaReserva = document.getElementById('horaReserva').value;
+      const duracao = document.getElementById('duracao').value;
+
+      try {
+        const response = await fetch('http://localhost:3031/reserva', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: nome, email: email, dataReserva: dataReserva, horaReserva: horaReserva, duracao: duracao }),
+        });
+
+        const data = await response.json();
+        alert(`Reserva realizada com sucesso para ${data.name}!`);
+      } catch (error) {
+        alert('Erro ao realizar a reserva!');
+        console.error(error);
+      }
+    });
+
+    // Carregar as mesas disponíveis ao carregar a página
+    window.onload = carregarMesasDisponiveis;
+  </script>
+</body>
+</html>

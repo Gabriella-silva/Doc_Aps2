@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="editar.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Usuário</title>
+
+  <div class="container">
+    <!-- Formulário: Editar Usuário -->
+    <div class="glassBox">
+      <h1>Editar Usuário</h1>
+      <form id="editUserForm" onsubmit="editUser(event)">
+        <div class="inputBox">
+          <label for="userId">ID do Usuário</label>
+          <input type="text" id="userId" name="userId" placeholder="Insira o ID do usuário" required>
+        </div>
+        <div class="inputBox">
+          <label for="userName">Nome do Usuário</label>
+          <input type="text" id="userName" name="userName" placeholder="Insira o novo nome" required>
+        </div>
+        <div class="inputBox">
+          <label for="userEmail">E-mail</label>
+          <input type="email" id="userEmail" name="userEmail" placeholder="Insira o novo e-mail" required>
+        </div>
+        <div class="submit">
+          <input type="submit" value="Editar Usuário">
+        </div>
+      </form>
+    </div>
+  
+    <!-- Formulário: Editar Mesa -->
+    <div class="glassBox">
+      <h1>Editar Mesa</h1>
+      <form id="editTableForm" onsubmit="editTable(event)">
+        <div class="inputBox">
+          <label for="tableId">ID da Mesa</label>
+          <input type="text" id="tableId" name="tableId" placeholder="Insira o ID da mesa" required>
+        </div>
+        <div class="inputBox">
+          <label for="tableName">Nome da Mesa</label>
+          <input type="text" id="tableName" name="tableName" placeholder="Insira o novo nome" required>
+        </div>
+        <div class="submit">
+          <input type="submit" value="Editar Mesa">
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+  <script>
+    document.getElementById("editForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const userId = document.getElementById("userId").value;
+      const userName = document.getElementById("userName").value;
+      const userEmail = document.getElementById("userEmail").value;
+      const responseMessage = document.getElementById("responseMessage");
+
+      // Limpar mensagens anteriores
+      responseMessage.textContent = "";
+      responseMessage.className = "response";
+
+      try {
+        const response = await fetch(`http://localhost:3031/editar/${userId}/${userName}/${userEmail}`, {
+          method: "GET",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          responseMessage.textContent = data.mensagem || "Usuário editado com sucesso.";
+        } else {
+          const errorData = await response.text();
+          responseMessage.textContent = errorData || "Erro ao editar usuário.";
+          responseMessage.classList.add("error");
+        }
+      } catch (error) {
+        responseMessage.textContent = `Erro: ${error.message}`;
+        responseMessage.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>

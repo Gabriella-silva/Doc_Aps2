@@ -1,0 +1,102 @@
+/* Estilo geral do body */
+body {
+    margin: 0;
+    padding: 0;
+    background: url('a.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Rubik", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+  
+  /* Contêiner centralizado */
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Espaço entre os blocos */
+    padding: 20px;
+    max-width: 1200px;
+  }
+  
+  /* Estilo para cada bloco (formulário ou seção) */
+  .glassBox {
+    background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+    border-radius: 23px;
+    box-shadow: 
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    padding: 30px;
+    width: 350px;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .glassBox:hover {
+    transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+  }
+  
+  /* Títulos */
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Estilo dos inputs */
+  .inputBox input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2); /* Fundo semi-transparente */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .inputBox input:focus {
+    outline: none;
+    border-color: #cd8d82;
+    box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
+  }
+  
+  /* Botões */
+  .submit input {
+    width: 100%;
+    padding: 12px;
+    background-color: #cd8d82;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 23px;
+    transition: all 0.3s ease;
+  }
+  
+  .submit input:hover {
+    background-color: hsl(11, 76%, 73%);
+    transform: scale(1.1);
+  }
+  
+  /* Estilo responsivo */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+  
+    .glassBox {
+      width: 90%;
+    }
+  }
+  

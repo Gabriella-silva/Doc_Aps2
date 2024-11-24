@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interação com API</title>
+</head>
+<body>
+    <h1>Tabela de Dados</h1>
+    <div id="container"></div>
+    <script>
+        async function carregarreserva() {
+            try {
+                // Faz a requisição para a API
+                const resposta = await fetch("http://localhost:3031/mostrar");
+
+                // Verifica se a resposta é válida
+                if (!resposta.ok) {
+                    throw new Error("Erro ao carregar os dados da API");
+                }
+
+                const reservas = await resposta.json(); // A variável 'musica' estava sendo usada erradamente
+
+                // Obtém o container
+                const container = document.getElementById("container");
+                container.innerHTML = ""; // Limpa o conteúdo anterior
+
+                // Cria a tabela
+                let tabelaHTML = `
+                    <table style="border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <th>ID</th>
+                            <th >Nome</th>
+                            <th >Email</th>
+                            <th>Tempo_Max<th>
+                            <th>Dt_Hora</th>
+                        </tr>
+                `;
+
+                // Itera sobre os  e adiciona as linhas à tabela
+                reservas.forEach((reserva) => {
+                    tabelaHTML += `
+                        <tr style="text-align:center">
+                            <td style="border: 1px solid black;">${reserva.id_reservas}</td>
+                            <td style="border: 1px solid black;">${reserva.nome}</td>
+                            <td style="border: 1px solid black;">${reserva.email}</td>
+                            <td style="border: 1px solid black;">${reserva.Tempo_Max}</td>
+                            <td style="border: 1px solid black;">${reserva.Dt_Hora}</td>
+
+                        </tr>
+                    `;
+                });
+
+                // Finaliza a tabela
+                tabelaHTML += "</table>";
+
+                // Adiciona a tabela ao container
+                container.innerHTML = tabelaHTML;
+
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                document.getElementById("container").innerHTML = "Erro ao carregar os dados da API.";
+            }
+        }
+
+        // Chama a função assim que a página carregar
+        window.onload = carregarreserva;
+    </script>
+</body>
+</html>

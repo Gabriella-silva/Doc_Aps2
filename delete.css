@@ -1,0 +1,107 @@
+/* Estilo geral do body */
+body {
+    margin: 0;
+    padding: 0;
+    background: url('june\ 2024\ desktop\ laptop\ wallpaper\ by\ sincerely_jehn.jpg') no-repeat center center fixed; /* Certifique-se de que o caminho para a imagem está correto */
+    background-size: cover;
+    font-family: "Rubik", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+  
+  /* Contêiner geral para os formulários */
+  .formContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Espaço entre os formulários */
+    width: 100%;
+    max-width: 1200px; /* Máxima largura */
+    padding: 20px;
+  }
+  
+  /* Estilo para os formulários individuais */
+  .formBox {
+    background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+    border-radius: 23px;
+    padding: 40px;
+    width: 350px;
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.37);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .formBox:hover {
+    transform: scale(1.05); /* Efeito de zoom suave ao passar o mouse */
+  }
+  
+  /* Estilo para os títulos */
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #090909;
+    margin-bottom: 20px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Labels dos inputs */
+  label {
+    font-size: 14px;
+    color: #090808;
+    margin-bottom: 10px;
+    display: block;
+  }
+ 
+  
+  /* Entradas de texto */
+ input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 23px;
+    font-size: 16px;
+    color: #0e0c0c;
+    transition: all 0.3s ease;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #cd8d82;
+    box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
+  }
+  
+  /* Botão de envio */
+  .submit button {
+    width: 100%;
+    padding: 12px;
+    background-color: #cd8d82;
+    border: none;
+    color: rgb(234, 231, 231);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 23px;
+    transition: all 0.3s ease;
+  }
+  
+  .submit button:hover {
+    background-color: hsl(11, 76%, 73%);
+    transform: scale(1.1);
+  }
+  
+  /* Estilo responsivo para telas menores */
+  @media (max-width: 768px) {
+    .formContainer {
+      flex-direction: column;
+    }
+  
+    .formBox {
+      width: 90%;
+    }
+  }
+  

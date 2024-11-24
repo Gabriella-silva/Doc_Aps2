@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deletar Usuário e Mesa</title>
+  <link rel="stylesheet" href="delete.css">
+</head>
+<body>
+  <!-- Container que vai agrupar as duas forms lado a lado -->
+  <div class="formContainer">
+    <div class="formBox">
+    <!-- Formulário para deletar usuário -->
+    <div class="deleteform">
+      <div class="glass">
+        <h1>Deletar Reserva</h1>
+        <form id="deleteUserForm">
+          <label for="userId"><h3>ID da reserva</h3></label>
+          <input type="number" id="userId" name="userId" placeholder="Digite o ID do usuário" required />
+          <div class="submit"><button type="submit">Deletar </button></div>
+        </form>
+        <div class="response" id="responseMessage"></div>
+      </div>
+    </div>
+    </div>
+
+
+    <script>
+      document.getElementById("deleteForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+  
+        const userId = document.getElementById("userId").value;
+        const responseMessage = document.getElementById("responseMessage");
+  
+        // Limpar mensagens anteriores
+        responseMessage.textContent = "";
+        responseMessage.className = "response";
+  
+        try {
+          const response = await fetch(`http://localhost:3031/deletar/${userId}`, {
+            method: "GET",
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            responseMessage.textContent = data.mensagem;
+          } else {
+            const errorData = await response.json();
+            responseMessage.textContent = errorData.mensagem || "Erro ao deletar usuário.";
+            responseMessage.classList.add("error");
+          }
+        } catch (error) {
+          responseMessage.textContent = `Erro: ${error.message}`;
+          responseMessage.classList.add("error");
+        }
+      });
+    </script>
+</body>
+</html>
