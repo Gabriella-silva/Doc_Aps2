@@ -23,8 +23,8 @@ conexaoBanco.authenticate()
 
 // Definição das tabelas com as chaves primárias e relacionamentos
 
-const Usuarios = conexaoBanco.define("usuarios", {
-  id_usuarios: {
+const estabelecimentos = conexaoBanco.define("estabelecimetos", {
+  id_estabelecimento: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -32,38 +32,56 @@ const Usuarios = conexaoBanco.define("usuarios", {
   nome: {
     type: Sequelize.STRING,
   },
-  email: {
+  telefone: {
+    type: Sequelize.STRING,
+  }
+  endereço: {
     type: Sequelize.STRING,
   }
 });
 
-const albuns = conexaoBanco.define("albuns", {
-  id_album: {
+const mesas = conexaoBanco.define("mesas", {
+  id_Estabelecimento: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  id_artista: {
+  nm_mesas: {
     type: Sequelize.INTEGER,
   },
-  nome: {
-    type: Sequelize.STRING,
+  capacidade: {
+    type: Sequelize.INTEGER,
   },
+  Disponibilidade: {
+    type: Sequelize.INTEGER,
+  }
 });
 
 
-const artistas = conexaoBanco.define("artistas", {
-  id_artista: {
+const reservas = conexaoBanco.define("reservas", {
+  id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  nm_artista: {
+  NomeCliente: {
     type: Sequelize.STRING,
   },
-  descricao: {
-    type: Sequelize.TEXT,
+  MesaID: {
+    type: Sequelize.INTEGER,
   },
+  DataHora: {
+    type: Sequelize.DATETIME,
+  },
+  TempoPermanencia:{
+    type : Sequelize.INTEGER,
+  }
+  NumeroPessoas{
+    type: Sequelize.INTEGER,
+  }
+  STATUS{
+    type: Sequelize.ENUM,
+  }
 });
 
 const musica = conexaoBanco.define("musica", {
