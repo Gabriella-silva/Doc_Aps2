@@ -209,7 +209,7 @@
       const duracao = document.getElementById('duracao').value;
 
       try {
-        const response = await fetch('http://localhost:3031/reserva', {
+        const response = await fetch('http://localhost:3031/salvar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: nome, email: email, dataReserva: dataReserva, horaReserva: horaReserva, duracao: duracao }),
