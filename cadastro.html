@@ -9,7 +9,7 @@
 <style>body {
     margin: 0;
     padding: 0;
-    background: url('a.jpg') no-repeat center center fixed;
+    background: url('june 2024 desktop laptop wallpaper by sincerely_jehn.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: "Rubik", sans-serif;
     display: flex;
@@ -83,7 +83,7 @@
   }
   
   /* Estilo dos inputs */
-  .inputBox input {
+ input {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -95,7 +95,7 @@
     transition: all 0.3s ease;
   }
   
-  .inputBox input:focus {
+  input:focus {
     outline: none;
     border-color: #cd8d82;
     box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
@@ -178,7 +178,7 @@
     // Função para carregar as mesas disponíveis
     async function carregarMesasDisponiveis() {
       try {
-        const response = await fetch('http://localhost:3031/mesas');
+        const response = await fetch('http://localhost:3031/mostrar');
         const mesas = await response.json();
 
         // Filtra as mesas disponíveis

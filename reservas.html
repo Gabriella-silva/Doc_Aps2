@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservas Realizadas</title>
+  <title>reservas Realizadas</title>
   <style>
     body {
       margin: 0;
@@ -94,21 +94,21 @@
 </head>
 <body>
   <div class="container">
-    <!-- Tabela de Reservas Realizadas -->
+    <!-- Tabela de reservas Realizadas -->
     <div class="glassBox">
-      <h1>Reservas Realizadas</h1>
+      <h1>reservas Realizadas</h1>
       <table id="reservasRealizadas">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Data da Reserva</th>
-            <th>Hora da Reserva</th>
+            <th>Data da reservas</th>
+            <th>Hora da reservas</th>
             <th>Duração (h)</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Reservas realizadas serão inseridas aqui -->
+          <!-- reservas realizadas serão inseridas aqui -->
         </tbody>
       </table>
     </div>
@@ -116,21 +116,21 @@
 
   <script>
     // Função para carregar as reservas realizadas
-    async function carregarReservas() {
+    async function carregarreservas() {
       try {
         const response = await fetch('http://localhost:3031/reservas');
         const reservas = await response.json();
 
         // Preenche a tabela com as reservas realizadas
         const tabela = document.getElementById('reservasRealizadas').getElementsByTagName('tbody')[0];
-        reservas.forEach(reserva => {
+        reservas.forEach(reservas => {
           const row = tabela.insertRow();
           row.innerHTML = `
-               <td>${reserva.id}</td>
-            <td>${reserva.dataReserva}</td>
-            <td>${reserva.horaReserva}</td>
-            <td>${reserva.duracao}</td>
-            <td>${reserva.status}</td>
+               <td>${reservas.id}</td>
+            <td>${reservas.datareservas}</td>
+            <td>${reservas.horareservas}</td>
+            <td>${reservas.duracao}</td>
+            <td>${reservas.status}</td>
           `;
         });
       } catch (error) {
@@ -139,7 +139,7 @@
     }
 
     // Carregar as reservas realizadas ao carregar a página
-    window.onload = carregarReservas;
+    window.onload = carregarreservas;
   </script>
 </body>
 </html>
