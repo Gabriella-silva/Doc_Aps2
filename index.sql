@@ -1,31 +1,33 @@
 
--- Tabela Estabelecimentos
-CREATE TABLE Estabelecimentos (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(255) NOT NULL,
-    Endereco VARCHAR(255) NOT NULL,
-    Telefone VARCHAR(15) NOT NULL
-);
 
--- Tabela Mesas
-CREATE TABLE Mesas (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    EstabelecimentoID INT NOT NULL,
-    NumeroMesa INT NOT NULL,
-    Capacidade INT NOT NULL,
-    Disponibilidade BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (EstabelecimentoID) REFERENCES Estabelecimentos(ID)
-);
-
--- Tabela Reservas
-CREATE TABLE Reservas (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
+-- Tabela para "estabelecimentos"
+CREATE TABLE IF NOT EXISTS estabelecimentos (
+    id_estabelecimento INT AUTO_INCREMENT PRIMARY KEY,
     NomeCliente VARCHAR(255) NOT NULL,
-    EmailCliente VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20),
+    endereço VARCHAR(255)
+);
+
+-- Tabela para "mesas"
+CREATE TABLE IF NOT EXISTS mesas (
+    id_mesa INT AUTO_INCREMENT PRIMARY KEY,
+    id_Estabelecimento INT,
+    nm_mesas INT NOT NULL,
+    capacidade INT NOT NULL,
+    Disponibilidade INT NOT NULL,
+    FOREIGN KEY (id_Estabelecimento) REFERENCES estabelecimentos(id_estabelecimento) ON DELETE CASCADE
+);
+
+-- Tabela para "reservas"
+CREATE TABLE IF NOT EXISTS reservas (
+    id_reservas INT AUTO_INCREMENT PRIMARY KEY,
+    NomeCliente VARCHAR(255) NOT NULL,
     MesaID INT NOT NULL,
     DataHora DATETIME NOT NULL,
-    TempoPermanencia INT NOT NULL, -- Tempo de permanência em minutos
+    TempoPermanencia INT NOT NULL,
     NumeroPessoas INT NOT NULL,
-    Status ENUM('pendente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendente',
-    FOREIGN KEY (MesaID) REFERENCES Mesas(ID)
+    STATUS ENUM('pendente', 'confirmada', 'cancelada') NOT NULL,
+    FOREIGN KEY (MesaID) REFERENCES mesas(id_mesa) ON DELETE CASCADE
 );
+
+-- Tabela "estabelecimentos", "mesas" e "reservas" estão criadas.

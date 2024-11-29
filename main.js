@@ -22,19 +22,18 @@ conexaoBanco.authenticate()
   });
 
 // Definição das tabelas com as chaves primárias e relacionamentos
-
-const estabelecimentos = conexaoBanco.define("estabelecimetos", {
+const estabelecimentos = conexaoBanco.define("estabelecimentos", {  // Correção no nome da tabela
   id_estabelecimento: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  nome: {
+  NomeCliente: {
     type: Sequelize.STRING,
   },
   telefone: {
     type: Sequelize.STRING,
-  }
+  },
   endereço: {
     type: Sequelize.STRING,
   }
@@ -57,9 +56,8 @@ const mesas = conexaoBanco.define("mesas", {
   }
 });
 
-
 const reservas = conexaoBanco.define("reservas", {
-  id: {
+  id_reservas: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -71,110 +69,97 @@ const reservas = conexaoBanco.define("reservas", {
     type: Sequelize.INTEGER,
   },
   DataHora: {
-    type: Sequelize.DATETIME,
+    type: Sequelize.DATE,
   },
-  TempoPermanencia:{
-    type : Sequelize.INTEGER,
-  }
-  NumeroPessoas{
+  TempoPermanencia: {
     type: Sequelize.INTEGER,
-  }
-  STATUS{
+  },
+  NumeroPessoas: {
+    type: Sequelize.INTEGER,
+  },
+  STATUS: {
     type: Sequelize.ENUM,
-  }
-});
-
-const musica = conexaoBanco.define("musica", {
-  id_musica: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  id_album: {
-    type: Sequelize.INTEGER,
-  },
-  nome: {
-    type: Sequelize.STRING,
-  },
-  duracao: {
-    type: Sequelize.STRING,  // Altere de Sequelize.TIME para Sequelize.STRING
+    values: ['pendente', 'confirmada', 'cancelada'], // Exemplo de valores para STATUS
   }
 });
 
 // Sincronizar com o banco de dados
 conexaoBanco.sync({ force: false });
 
-// Rota para salvar um novo usuário
-// Alteração na rota para salvar usuário, agora utilizando POST e corpo da requisição
+// Rota para salvar uma nova reserva
 rotas.post("/salvar", async function (req, res) {
-  const { nome, email } = req.body;  // Agora pegamos os dados do corpo da requisição
+  const { NomeCliente, MesaID, TempoPermanencia, NumeroPessoas, DataHora, STATUS } = req.body;  // Agora pegamos os dados do corpo da requisição
 
   try {
-    const novoUsuario = await Usuarios.create({ nome, email });
+    const novaReserva = await reservas.create({ 
+      NomeCliente, 
+      MesaID, 
+      TempoPermanencia,
+      NumeroPessoas,
+      DataHora,
+      STATUS
+    });
     res.json({
-      resposta: "Usuário criado com sucesso",
-      usuario: novoUsuario,
+      resposta: "reserva criada com sucesso",
+      reserva: novaReserva,
     });
   } catch (error) {
-    res.status(500).json({ mensagem: `Erro ao criar usuário: ${error.message}` });
+    res.status(500).json({ mensagem: `Erro ao criar reserva: ${error.message}` });
   }
 });
 
-
-// Rota para deletar um usuário
+// Rota para deletar uma reserva
 rotas.get("/deletar/:id", async function (req, res) {
   const { id } = req.params;
   const idNumber = parseInt(id, 10);
 
   try {
-    const usuario = await Usuarios.findByPk(idNumber);
+    const reserva = await reservas.findByPk(idNumber);
 
-    if (!usuario) {
-      return res.status(404).json({ mensagem: "Usuário não encontrado" });
+    if (!reserva) {
+      return res.status(404).json({ mensagem: "Reserva não encontrada" });
     }
 
-    await Usuarios.destroy({
-      where: { id_usuarios: idNumber },
-    });
+    await reserva.destroy();  // Alteração na lógica de deletar reserva
 
-    res.json({ mensagem: "Usuário deletado com sucesso" });
+    res.json({ mensagem: "Reserva deletada com sucesso" });
   } catch (error) {
-    res.status(500).json({ mensagem: `Erro ao deletar usuário: ${error.message}` });
+    res.status(500).json({ mensagem: `Erro ao deletar reserva: ${error.message}` });
   }
 });
 
-// Rota para editar um usuário
-rotas.get("/editar/:id/:nome/:email", async function (req, res) {
-  const { id, nome, email } = req.params;
+// Rota para editar uma reserva
+rotas.get("/editar/:id/:NomeCliente/:MesaID", async function (req, res) {
+  const { id, NomeCliente, MesaID } = req.params;
   const idNumber = parseInt(id, 10);
 
   try {
-    const [updated] = await Usuarios.update(
-      { nome, email },
+    const [updated] = await reservas.update(  // Alteração para usar o modelo correto
+      { NomeCliente, MesaID },
       {
-        where: { id_usuarios: idNumber },
+        where: { id_reservas: idNumber },
       }
     );
 
     if (updated) {
       res.json({
-        mensagem: "Usuário atualizado com sucesso",
+        mensagem: "Reserva atualizada com sucesso",
       });
     } else {
-      res.status(404).json({ mensagem: "Usuário não encontrado" });
+      res.status(404).json({ mensagem: "Reserva não encontrada" });
     }
   } catch (error) {
-    res.status(500).json({ mensagem: `Erro ao editar usuário: ${error.message}` });
+    res.status(500).json({ mensagem: `Erro ao editar reserva: ${error.message}` });
   }
 });
 
-// Rota para exibir todos os usuários
+// Rota para exibir todas as reservas
 rotas.get("/mostrar", async function (req, res) {
   try {
-    const todosUsuarios = await Usuarios.findAll();
-    res.json(todosUsuarios);
+    const todasReservas = await reservas.findAll();  // Alteração para usar o modelo correto
+    res.json(todasReservas);
   } catch (error) {
-    res.status(500).json({ mensagem: `Erro ao buscar usuários: ${error.message}` });
+    res.status(500).json({ mensagem: `Erro ao buscar reservas: ${error.message}` });
   }
 });
 
