@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Reserva</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('june 2024 desktop laptop wallpaper by sincerely_jehn.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: "Rubik", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+            max-width: 1200px;
+        }
+
+        .glassBox {
+            background: rgba(255, 255, 255, 0.2); /* Fundo translúcido com mais opacidade */
+            backdrop-filter: blur(10px); /* Efeito de desfoque */
+            border-radius: 23px;
+            box-shadow: 
+                rgba(0, 0, 0, 0.25) 0px 54px 55px,
+                rgba(0, 0, 0, 0.12) 0px -12px 30px,
+                rgba(0, 0, 0, 0.12) 0px 4px 6px,
+                rgba(0, 0, 0, 0.17) 0px 12px 13px,
+                rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            padding: 30px;
+            width: 350px;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .glassBox:hover {
+            transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Estilo da tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #cd8d82;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background-color: rgba(205, 141, 130, 0.2);
+        }
+
+        /* Estilo dos inputs */
+        input {
+            width: 92%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #cd8d82;
+            box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
+        }
+
+        /* Botões */
+        .submit input {
+            width: 100%;
+            padding: 12px;
+            background-color: #cd8d82;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 23px;
+            transition: all 0.3s ease;
+        }
+
+        .submit input:hover {
+            background-color: hsl(11, 76%, 73%);
+            transform: scale(1.1);
+        }
+
+        /* Estilo responsivo */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .glassBox {
+                width: 90%;
+            }
+        }
+
+        .status-button {
+            background: rgba(255, 255, 255, 0.4); /* Fundo translúcido com mais opacidade */
+            backdrop-filter: blur(10px); /* Efeito de desfoque */
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .status-livre {
+            background-color: #14a043; /* Verde para "Livre" */
+        }
+
+        .status-ocupada {
+            background-color: #dc3545; /* Vermelho para "Ocupada" */
+        }
+    </style>
+    <script>
+        // Função para enviar os dados para o backend
+        async function registrarReserva() {
+            const nomeCliente = document.getElementById("nomeCliente").value;
+            const nmMesas = document.getElementById("nmMesas").value;
+            const dataHora = document.getElementById("dataHora").value;
+            const tempoPermanencia = document.getElementById("tempoPermanencia").value;
+            const numeroPessoas = document.getElementById("numeroPessoas").value;
+
+            // Objeto com os dados para a reserva
+            const dadosReserva = {
+                NomeCliente: nomeCliente,
+                nm_mesas: nmMesas,
+                DataHora: dataHora,
+                TempoPermanencia: tempoPermanencia,
+                NumeroPessoas: numeroPessoas
+            };
+
+            try {
+                // Enviar dados para a rota POST do servidor
+                const response = await fetch('http://localhost:3031/reservas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadosReserva)
+                });
+
+                // Processar a resposta do servidor
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    alert('Reserva realizada com sucesso!');
+                    // Opcional: Atualizar a tabela de mesas livres (se necessário)
+                    carregarMesasLivres();
+                } else {
+                    alert(resultado.mensagem);
+                }
+            } catch (error) {
+                alert('Erro ao realizar a reserva: ' + error.message);
+            }
+        }
+
+        // Função para carregar as mesas livres
+        async function carregarMesasLivres() {
+            try {
+                const response = await fetch('http://localhost:3031/todasmesas');
+                const mesas = await response.json();
+
+                // Limpar a tabela antes de adicionar os novos dados
+                const tabela = document.getElementById('tabelaMesas').getElementsByTagName('tbody')[0];
+                tabela.innerHTML = '';
+
+                // Adicionar cada mesa livre na tabela
+                mesas.forEach(mesa => {
+                    if (mesa.STATUS === 'Livre') {
+                        const row = tabela.insertRow();
+                        row.innerHTML = `
+                            <td>${mesa.nm_mesas}</td>
+                            <td>${mesa.capacidade}</td>
+                            <td><span class="status-button status-livre">Livre</span></td>
+                        `;
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar mesas livres:', error);
+            }
+        }
+
+        // Carregar as mesas livres quando a página for carregada
+        window.onload = function() {
+            carregarMesasLivres();
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="glassBox">
+    <h1>Cadastro de Reserva</h1>
+
+    <form id="formReserva" onsubmit="event.preventDefault(); registrarReserva();">
+        <label for="nomeCliente">Nome do Cliente: <br>(Mesmo usado no cadastro)</label>
+        <input type="text" id="nomeCliente" name="nomeCliente" required>
+
+        <label for="nmMesas">Número da Mesa:</label>
+        <input type="number" id="nmMesas" name="nmMesas" required>
+
+        <label for="dataHora">Data e Hora da Reserva:</label>
+        <input type="datetime-local" id="dataHora" name="dataHora" required>
+
+        <label for="tempoPermanencia">Tempo de Permanência (em minutos):</label>
+        <input type="number" id="tempoPermanencia" name="tempoPermanencia" required>
+
+        <label for="numeroPessoas">Número de Pessoas:</label>
+        <input type="number" id="numeroPessoas" name="numeroPessoas" required>
+
+        <div class="submit">
+            <input type="submit" value="Registrar Reserva">
+        </div>
+    </form>
+</div>
+
+    <div class="glassBox">
+      <h3>Mesas Disponíveis</h3>
+      <table id="tabelaMesas">
+        <thead>
+          <tr>
+            <th>Número da Mesa</th>
+            <th>Capacidade</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dados das mesas serão preenchidos aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

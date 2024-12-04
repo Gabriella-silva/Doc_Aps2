@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciar Mesas</title>
+  <style>
+body {
+    margin: 0;
+    padding: 0;
+    background: url('june 2024 desktop laptop wallpaper by sincerely_jehn.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Rubik", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+
+    .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    max-width: 1200px;
+  }
+  .glassBox {
+    background: rgba(255, 255, 255, 0.2); /* Fundo translúcido com mais opacidade */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+    border-radius: 23px;
+    box-shadow: 
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    padding: 30px;
+    width: 400px;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .glassBox:hover {
+    transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+  }
+  
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Estilo da tabela */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+  
+  th {
+    background-color: #cd8d82;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  tr:hover {
+    background-color: rgba(205, 141, 130, 0.2);
+  }
+  
+  /* Estilo dos inputs */
+ input {
+    width: 92%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #cd8d82;
+    box-shadow: 0 0 5px rgba(205, 141, 130, 0.8);
+  }
+  
+  /* Botões */
+  .submit input {
+    width: 100%;
+    padding: 12px;
+    background-color: #cd8d82;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 23px;
+    transition: all 0.3s ease;
+  }
+  
+  .submit input:hover {
+    background-color: hsl(11, 76%, 73%);
+    transform: scale(1.1);
+  }
+  
+  /* Estilo responsivo */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+  
+    .glassBox {
+      width: 90%;
+    }
+  }
+  .status-button {
+    background: rgba(255, 255, 255, 0.4); /* Fundo translúcido com mais opacidade */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .status-livre {
+      background-color: #14a043; /* Verde para "Livre" */
+    }
+
+    .status-ocupada {
+      background-color: #dc3545; /* Vermelho para "Ocupada" */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Formulário -->
+    <div class="glassBox">
+      <h3>Cadastrar Mesa</h3>
+      <form id="mesaForm">
+        <label for="nm_mesas">Número da Mesa:</label>
+        <input type="number" id="nm_mesas" name="nm_mesas" required>
+        <label for="capacidade">Capacidade:</label>
+        <input type="number" id="capacidade" name="capacidade" required>
+        <label for="status">Status:</label>
+        <select class="status-button"id="status" name="status" required>
+          <option  value="Livre">Livre</option>
+          <option  value="Ocupada">Ocupada</option>
+        </select>
+        <br>
+        <br>
+        <div class="submit">
+          <input type="submit" value="Cadastrar Mesa">
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabela -->
+    <div class="glassBox">
+      <h3>Mesas</h3>
+      <table id="mesasTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Número da Mesa</th>
+            <th>Capacidade</th>
+            <th>Status</th>
+            <th>Ação</th> <!-- Nova coluna de ação -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dados das mesas serão preenchidos aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Função para carregar as mesas na tabela
+    async function carregarMesas() {
+      try {
+        const response = await fetch("http://localhost:3031/todasmesas");
+        if (!response.ok) throw new Error("Erro ao buscar mesas.");
+        const mesas = await response.json();
+
+        const tbody = document.querySelector("#mesasTable tbody");
+        tbody.innerHTML = ""; // Limpar tabela antes de preencher
+
+        mesas.forEach(mesa => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${mesa.id_Mesa}</td>
+            <td>${mesa.nm_mesas}</td>
+            <td>${mesa.capacidade}</td>
+            <td>${mesa.STATUS}</td>
+            <td><button onclick="excluirMesa(${mesa.id_Mesa})">Excluir</button></td> <!-- Botão para excluir -->
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar mesas:", error.message);
+      }
+    }
+
+    // Função para excluir uma mesa
+    async function excluirMesa(idMesa) {
+      const confirmacao = confirm("Tem certeza que deseja excluir esta mesa?");
+      if (!confirmacao) return;
+
+      try {
+        const response = await fetch(`http://localhost:3031/mesas/${idMesa}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) throw new Error("Erro ao excluir mesa.");
+
+        alert("Mesa excluída com sucesso!");
+        carregarMesas(); // Atualizar a tabela
+      } catch (error) {
+        console.error("Erro ao excluir mesa:", error.message);
+      }
+    }
+
+    // Função para enviar os dados do formulário
+    document.querySelector("#mesaForm").addEventListener("submit", async (event) => {
+      event.preventDefault(); // Impedir o envio padrão do formulário
+
+      const nm_mesas = document.querySelector("#nm_mesas").value;
+      const capacidade = document.querySelector("#capacidade").value;
+      const status = document.querySelector("#status").value;
+
+      try {
+        const response = await fetch("http://localhost:3031/mesas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nm_mesas, capacidade, STATUS: status }),
+        });
+
+        if (!response.ok) throw new Error("Erro ao cadastrar mesa.");
+
+        alert("Mesa cadastrada com sucesso!");
+        document.querySelector("#mesaForm").reset(); // Limpar o formulário
+        carregarMesas(); // Atualizar tabela
+      } catch (error) {
+        console.error("Erro ao cadastrar mesa:", error.message);
+      }
+    });
+
+    // Carregar mesas ao abrir a página
+    carregarMesas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Reserva</title>
+    <style>
+        /* Estilos internos para a página */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('june 2024 desktop laptop wallpaper by sincerely_jehn.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: "Rubik", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 94%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #cd8d82;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 23px;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: hsl(11, 76%, 73%);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Reserva</h1>
+        <form id="formEditarReserva">
+            <label for="nomeCliente">Nome do Cliente:</label>
+            <input type="text" id="nomeCliente" required>
+
+            <label for="nmMesas">Número da Mesa:</label>
+            <input type="number" id="nmMesas" required>
+
+            <label for="dataHora">Data e Hora da Reserva:</label>
+            <input type="datetime-local" id="dataHora" required>
+
+            <label for="tempoPermanencia">Tempo de Permanência (em minutos):</label>
+            <input type="number" id="tempoPermanencia" required>
+
+            <label for="numeroPessoas">Número de Pessoas:</label>
+            <input type="number" id="numeroPessoas" required>
+
+            <button type="button" class="submit-btn" onclick="editarReserva()">Atualizar Reserva</button>
+        </form>
+    </div>
+
+    <script>
+        // Função para obter o ID da reserva da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const reservaId = urlParams.get('id');
+
+
+
+        // Função para carregar os dados da reserva a ser editada
+        async function carregarReserva() {
+            try {
+                const response = await fetch(`http://localhost:3031/editarreservas/${reservaId}`);
+                const reserva = await response.json();
+
+                if (reserva) {
+                    document.getElementById("nomeCliente").value = reserva.NomeCliente;
+                    document.getElementById("nmMesas").value = reserva.nm_mesas;
+                    document.getElementById("dataHora").value = new Date(reserva.DataHora).toISOString().slice(0, 16);
+                    document.getElementById("tempoPermanencia").value = reserva.TempoPermanencia;
+                    document.getElementById("numeroPessoas").value = reserva.NumeroPessoas;
+                } else {
+                    alert('Reserva não encontrada!');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar reserva:', error);
+            }
+        }
+
+ // Função para editar a reserva
+async function editarReserva() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reservaId = urlParams.get('id');  // Pegando o ID da URL
+
+    // Obter os dados dos campos do formulário
+    const nomeCliente = document.getElementById("nomeCliente").value;
+    const nmMesas = document.getElementById("nmMesas").value;
+    const dataHora = document.getElementById("dataHora").value;
+    const tempoPermanencia = document.getElementById("tempoPermanencia").value;
+    const numeroPessoas = document.getElementById("numeroPessoas").value;
+
+    const dadosReserva = {
+        NomeCliente: nomeCliente,
+        nm_mesas: nmMesas,
+        DataHora: dataHora,
+        TempoPermanencia: tempoPermanencia,
+        NumeroPessoas: numeroPessoas
+    };
+
+    try {
+        const response = await fetch(`http://localhost:3031/editarreservas/${reservaId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosReserva)
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            alert('Reserva atualizada com sucesso!');
+            window.location.href = 'reservas.html'; // Redirecionar após sucesso
+        } else {
+            alert(resultado.mensagem || 'Erro ao editar reserva.');
+        }
+    } catch (error) {
+        alert('Erro ao editar a reserva: ' + error.message);
+    }
+}
+
+        // Carregar os dados da reserva quando a página for carregada
+        window.onload = carregarReserva;
+    </script>
+</body>
+</html>

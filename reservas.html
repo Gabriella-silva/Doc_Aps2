@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>reservas Realizadas</title>
+  <title>Reservas Realizadas</title>
   <style>
     body {
       margin: 0;
@@ -20,16 +20,14 @@
 
     .container {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
-      padding: 20px;
-      max-width: 1200px;
+      justify-content: center; /* Alinha o conteúdo horizontalmente no centro */
+      align-items: center; /* Alinha o conteúdo verticalmente no centro */
+      width: 100%; 
+      height: 100%;
     }
 
     .glassBox {
-      background: rgba(255, 255, 255, 0.2); /* Fundo translúcido com mais opacidade */
+      background: rgba(255, 255, 255, 0.2); /* Fundo translúcido */
       backdrop-filter: blur(10px); /* Efeito de desfoque */
       border-radius: 23px;
       box-shadow: 
@@ -39,7 +37,7 @@
         rgba(0, 0, 0, 0.17) 0px 12px 13px,
         rgba(0, 0, 0, 0.09) 0px -3px 5px;
       padding: 30px;
-      width: 350px;
+      width: 700px; /* Largura da tabela */
       transition: all 0.5s ease-in-out;
     }
 
@@ -80,14 +78,19 @@
       background-color: rgba(205, 141, 130, 0.2);
     }
 
+    tbody {
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      color: black;
+    }
+
     /* Estilo responsivo */
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
       .glassBox {
         width: 90%;
+      }
+
+      table {
+        width: 100%;
       }
     }
   </style>
@@ -96,19 +99,20 @@
   <div class="container">
     <!-- Tabela de reservas Realizadas -->
     <div class="glassBox">
-      <h1>reservas Realizadas</h1>
+      <h1>Reservas Realizadas</h1>
       <table id="reservasRealizadas">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Data da reservas</th>
-            <th>Hora da reservas</th>
-            <th>Duração (h)</th>
-            <th>Status</th>
+            <th>ID Reserva</th>
+            <th>Data da Reserva</th>
+            <th>Hora da Reserva</th>
+            <th>Duração (min)</th>
+            <th>Editar Reserva</th>
+            <th>Excluir Reserva</th>
           </tr>
         </thead>
         <tbody>
-          <!-- reservas realizadas serão inseridas aqui -->
+          <!-- Reservas realizadas serão inseridas aqui -->
         </tbody>
       </table>
     </div>
@@ -118,23 +122,57 @@
     // Função para carregar as reservas realizadas
     async function carregarreservas() {
       try {
-        const response = await fetch('http://localhost:3031/reservas');
+        const response = await fetch('http://localhost:3031/todasreservas');
         const reservas = await response.json();
 
         // Preenche a tabela com as reservas realizadas
         const tabela = document.getElementById('reservasRealizadas').getElementsByTagName('tbody')[0];
-        reservas.forEach(reservas => {
+        tabela.innerHTML = ''; // Limpar tabela antes de adicionar novas reservas
+        reservas.forEach(reserva => {
+          // Verificar se a DataHora está no formato esperado
+          const dataHora = reserva.DataHora;
+
+          // Se a data for válida, separa a data e hora
+          const date = new Date(dataHora);
+          const data = date.toLocaleDateString('pt-BR'); // Converte para data no formato pt-BR
+          const hora = date.toLocaleTimeString('pt-BR'); // Converte para hora no formato pt-BR
+
           const row = tabela.insertRow();
           row.innerHTML = `
-               <td>${reservas.id}</td>
-            <td>${reservas.datareservas}</td>
-            <td>${reservas.horareservas}</td>
-            <td>${reservas.duracao}</td>
-            <td>${reservas.status}</td>
+            <td>${reserva.id_reservas}</td>
+            <td>${data}</td> <!-- Exibe a data -->
+            <td>${hora}</td> <!-- Exibe a hora -->
+            <td>${reserva.NumeroPessoas}</td>
+            <td><a href="editarreserva.html?id=${reserva.id_reservas}">Editar</a></td>
+            <td><button onclick="deletarReserva(${reserva.id_reservas}, this)">Excluir</button></td> <!-- Botão de exclusão -->
           `;
         });
       } catch (error) {
         console.error('Erro ao carregar as reservas:', error);
+      }
+    }
+
+    // Função para deletar a reserva
+    async function deletarReserva(id, button) {
+      const confirmar = confirm('Tem certeza que deseja excluir esta reserva?');
+      if (!confirmar) return;
+
+      try {
+        const response = await fetch(`http://localhost:3031/deletar/${id}`, {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          alert('Reserva excluída com sucesso!');
+          // Remove a linha da tabela após excluir
+          const row = button.closest('tr');
+          row.remove();
+        } else {
+          alert('Erro ao excluir a reserva.');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir a reserva:', error);
+        alert('Erro ao tentar excluir a reserva.');
       }
     }
 
